@@ -1,4 +1,5 @@
 # app/supplies/main.py
+import os
 from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,9 +39,16 @@ app = FastAPI(lifespan=lifespan,
                 Saldos de ARPs e Débitos de Cotas.")
     
 # Configuração de segurança de rede (CORS) para o React + Vite
+# Em produção CADUCEU_CORS_ORIGINS (csv) é obrigatório no Render; o wildcard fica só para dev local.
+_cors_origins = [
+    origin.strip()
+    for origin in os.getenv("CADUCEU_CORS_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors_origins or ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,3 +58,10 @@ configure_global_exception_handlers(app)  # Configura interceptadores globais de
 # Acopla o módulo de Suprimentos ao servidor web
 app.include_router(supply_router)
 app.include_router(auth_router)
+
+
+@app.get("/health", tags=["Infra"])
+def health() -> dict[str, str]:
+    """Liveness para o health check do Render. Não toca o banco de propósito:
+    o check precisa ser barato e continuar respondendo em picos de latência do banco."""
+    return {"status": "ok"}

@@ -108,8 +108,16 @@ Em desenvolvimento elas podem vir de um arquivo `.env` na raiz do projeto (lido 
 | Variável | Default | Descrição |
 |---|---|---|
 | `AUTH_SECRET_KEY` | — **(obrigatória)** | Chave que assina os JWTs. Não tem default no código: sem ela a API não sobe. Gere uma por ambiente (`openssl rand -hex 32`) e mantenha fora do git — conhecê-la permite forjar tokens de qualquer usuário e setor |
-| `DATABASE_URL` | `sqlite:///./caduceu.db` | Conexão com o banco (SQLite em dev, PostgreSQL em produção) |
+| `DATABASE_URL` | `sqlite:///./caduceu.db` (só fora do Render) | Conexão com o banco. **No Render (`RENDER=true`) é obrigatória** — o app não sobe sem ela, para nunca gravar dados em SQLite efêmero |
+| `CADUCEU_CORS_ORIGINS` | vazio → `*` (apenas dev) | Lista separada por vírgula das origens do frontend autorizadas (ex.: `https://caduceu-sesap.vercel.app`). Em produção, o wildcard é inaceitável com `allow_credentials` |
 | `CADUCEU_ADMIN_PASSWORD` | `admin123` | Senha inicial do `admin` criada pelo seed — **sempre defina em produção** |
+
+### Deploy (Render)
+
+- Build: `pip install -r requirements.txt` (versões pinadas; Python 3.14 via `.python-version`)
+- Start: `uvicorn app.supplies.main:app --host 0.0.0.0 --port $PORT` (Render injeta `PORT`; o default do uvicorn binda `127.0.0.1` e não funciona lá)
+- Health check: `GET /health` (sem autenticação, não toca o banco)
+- O seed roda automaticamente no primeiro boot (catálogo vazio); restarts e redeploys não repetem o seed
 
 ### Catálogo de insumos
 
