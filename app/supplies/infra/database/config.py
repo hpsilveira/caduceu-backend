@@ -7,8 +7,16 @@ from app.supplies.infra.database.models import Base
 
 load_dotenv()
 
-# 1. Recupera a URL do banco das variáveis de ambiente (Fallback para SQLite local se não houver Postgres)
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./caduceu.db")
+# 1. Recupera a URL do banco das variáveis de ambiente.
+# No Render o SQLite default é uma armadilha: o disco é efêmero e cada deploy apagaria tudo.
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    if os.getenv("RENDER", "").lower() == "true":
+        raise RuntimeError(
+            "DATABASE_URL é obrigatório no Render: crie o PostgreSQL gerenciado e copie a "
+            "Internal Database URL nas variáveis de ambiente do serviço."
+        )
+    DATABASE_URL = "sqlite:///./caduceu.db"  # apenas desenvolvimento local
 
 # 2. Configura o Engine dinamicamente com Pool apenas se não for SQLite
 is_sqlite = DATABASE_URL.startswith("sqlite")
@@ -26,7 +34,10 @@ else:
         "pool_size": 20,
         "max_overflow": 10,
         "pool_timeout": 30,
-        "pool_recycle": 1800
+        "pool_recycle": 1800,
+        # Render encerra conexões ociosas; sem pre-ping a primeira requisição após o
+        # período idle recebe uma conexão morta e quebra com InterfaceError.
+        "pool_pre_ping": True
     })
 
 engine = create_engine(DATABASE_URL, **engine_kwargs)

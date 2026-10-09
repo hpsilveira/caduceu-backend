@@ -147,7 +147,7 @@ class SqlAlchemyArpRepository(ArpRepository):
                 process_sei=arp.process_sei,
                 expiration_date=arp.expiration_date,
                 owner_sector_id=arp.owner_sector_id,
-                is_active=1 if arp.is_active else 0
+                is_active=arp.is_active
             )
             
             # CORREÇÃO: Iterar sobre 'arp.items' (Domínio). 
@@ -160,7 +160,7 @@ class SqlAlchemyArpRepository(ArpRepository):
                     description=item.description,
                     total_quantity_approved=item.total_quantity_approved,
                     quantity_consumed=item.quantity_consumed,
-                    unit_price=float(item.unit_price.amount) # Correção para extrair do Value Object Money
+                    unit_price=item.unit_price.amount # Money -> Numeric(15,2) sem round-trip por float
                 )
                 
                 for quota in item.quota_units:
@@ -194,7 +194,7 @@ class SqlAlchemyArpRepository(ArpRepository):
                 description=item.description,
                 total_quantity_approved=item.total_quantity_approved,
                 quantity_consumed=item.quantity_consumed,
-                unit_price=float(item.unit_price.amount)
+                unit_price=item.unit_price.amount
             )
 
             for quota in item.quota_units:

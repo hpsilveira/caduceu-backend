@@ -63,7 +63,7 @@ class SupplyOrderModel(Base):
     unit_id: Mapped[int] = mapped_column(nullable=False)
     quantity_requested: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
     process_sei_request: Mapped[str] = mapped_column(String(30), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
 
 # =========================================================================
@@ -112,4 +112,4 @@ class UserModel(Base):
     sector_id: Mapped[int] = mapped_column(ForeignKey("dim_sector.id"), nullable=False, index=True)
     must_change_password: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
