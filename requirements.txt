@@ -1,0 +1,10 @@
+python-dotenv
+pydantic[email]
+pydantic-extra-types[phonenumbers]
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-jose[cryptography]
+bcrypt
+python-multipart

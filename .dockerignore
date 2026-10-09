@@ -1,0 +1,53 @@
+# Python-specific ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.pytest_cache/
+htmlcov/
+.mypy_cache/
+
+# Build and distribution files
+dist/
+build/
+*.egg-info/
+*.whl
+
+# Version control and editor files
+.git/
+.gitignore
+.gitmodules
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Log files and temporary data
+*.log
+tmp/
+temp/
+
+# Local databases and raw spreadsheet exports
+*.db
+*.db-journal
+items.csv
+
+# Agent local settings
+.qoder/
+
+# Environment variables and sensitive data (if not managed securely)
+.env
+.env.*
+.flaskenv
+config.ini
+secrets.yaml
