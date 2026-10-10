@@ -2,6 +2,7 @@ import os
 from typing import Any, Generator
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import sessionmaker, Session
 from app.supplies.infra.database.models import Base
 
@@ -18,8 +19,17 @@ if not DATABASE_URL:
         )
     DATABASE_URL = "sqlite:///./caduceu.db"  # apenas desenvolvimento local
 
+# Fixa o driver do PostgreSQL. A Internal Database URL do Render chega com o scheme cru
+# `postgresql://`, e no SQLAlchemy 2.x esse scheme resolve para o driver psycopg 3 — que não
+# está no requirements (o pin é psycopg2-binary). Normalizar aqui permite colar a URL exatamente
+# como o painel do Render a apresenta. Mantém-se o objeto URL (não str()): str(URL) esconde a
+# senha como `***`.
+DATABASE_URL = make_url(DATABASE_URL)
+if DATABASE_URL.drivername == "postgresql":
+    DATABASE_URL = DATABASE_URL.set(drivername="postgresql+psycopg2")
+
 # 2. Configura o Engine dinamicamente com Pool apenas se não for SQLite
-is_sqlite = DATABASE_URL.startswith("sqlite")
+is_sqlite = DATABASE_URL.drivername == "sqlite"
 
 engine_kwargs: dict[str, Any] = {
     "echo": False  # Mude para True para ver os SQLs gerados no terminal
