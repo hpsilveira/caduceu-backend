@@ -1,0 +1,15 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.mypy]
+files = ["tests"]
+# `tests/` não tem `__init__.py` (regra do layout), então dois `conftest.py` colidiriam como
+# módulos homônimos. As duas chaves abaixo fazem o nome do módulo sair do caminho relativo à raiz
+# — `tests.conftest` e `tests.integration.conftest` — sem pedir pacote regular a pytest não tem.
+namespace_packages = true
+explicit_package_bases = true
+follow_imports = "silent"
+disallow_untyped_defs = true
+check_untyped_defs = true

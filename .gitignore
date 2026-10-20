@@ -1,0 +1,52 @@
+# Byte-code files
+*.pyc
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+*.swp
+*.bak
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Test related files
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# Jupyter Notebook related files
+.ipynb_checkpoints/
+
+# Database files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Log files
+*.log
+
+# Agent local settings
+.qoder/
+
+# Raw spreadsheet exports (dados operacionais internos: preços, fornecedores, saldos)
+items.csv
+
+# Sensitive files (if applicable, add as needed)
+.env
+.env.*
+.flaskenv
+config.ini

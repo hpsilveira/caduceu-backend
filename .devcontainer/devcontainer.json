@@ -1,0 +1,27 @@
+{
+  "name": "caduceu backend service",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "python -m venv .venv && . .venv/bin/activate && pip install -r requirements-dev.txt",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-containers"
+      ]
+    }
+  },
+  "containerEnv": {
+    "VIRTUAL_ENV": "${containerWorkspaceFolder}/.venv"
+  },
+  "remoteEnv": {
+    "PATH": "${containerWorkspaceFolder}/.venv/bin:${containerEnv:PATH}"
+  },
+  "forwardPorts": [8000],
+  "remoteUser": "fastapi"
+}
