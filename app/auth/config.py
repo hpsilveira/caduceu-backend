@@ -1,0 +1,10 @@
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+ACCESS_TOKEN_EXPIRE_MINUTES = 480
+SECRET_KEY = os.environ["AUTH_SECRET_KEY"]
+ALGORITHM = "HS256"
+CADUCEU_DEFAULT_USER_PASSWORD = os.getenv("CADUCEU_DEFAULT_USER_PASSWORD", "a123456@")
