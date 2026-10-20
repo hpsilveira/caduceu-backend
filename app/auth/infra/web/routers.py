@@ -53,7 +53,8 @@ def create_user(
 ):
     """
     Endpoint exclusivo para ADMIN criar novos usuários.
-    Senha padrão: a123456@ (força troca no primeiro login)
+    A senha padrão vem de CADUCEU_DEFAULT_USER_PASSWORD (default de dev `a123456@`); o usuário
+    nasce com must_change_password=True, o que força a troca no primeiro login.
     """
     # 1. Validação de permissão (apenas ADMIN)
     if not current_user.is_admin:
@@ -62,7 +63,7 @@ def create_user(
             detail="Apenas administradores podem criar novos usuários."
         )
     
-    # 2. Senha padrão fixa (governança de segurança)
+    # 2. Senha padrão do ambiente, definida pela variável de ambiente
     default_password = CADUCEU_DEFAULT_USER_PASSWORD
     
     # 3. Executar comando
