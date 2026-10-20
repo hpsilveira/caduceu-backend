@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: caduceu
+    env: python
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.supplies.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      # O Render injeta a Internal Database URL — nada de colar senha no painel.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: caduceu-db
+          property: connectionString
+      # Chave do JWT gerada pelo Render no primeiro deploy (visível só no painel).
+      - key: AUTH_SECRET_KEY
+        generateValue: true
+      - key: CADUCEU_CORS_ORIGINS
+        value: https://caduceu.vercel.app
+      # sync: false → o valor é digitado no painel ao criar, nunca entra no git.
+      - key: CADUCEU_ADMIN_PASSWORD
+        sync: false
+      # Senha padrão dos usuários que o admin cria (`POST /auth/users`). Sem ela no painel,
+      # o app usa o default publicado no README — todo operador novo nasceria com ela.
+      - key: CADUCEU_DEFAULT_USER_PASSWORD
+        sync: false
+
+databases:
+  - name: caduceu-db
+    databaseName: caduceu
+    plan: free
+    region: oregon
